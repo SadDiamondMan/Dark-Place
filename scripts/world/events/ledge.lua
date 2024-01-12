@@ -15,7 +15,7 @@ function Ledge:init(data)
 end
 
 function Ledge:onCollide(chara)
-    if chara.is_player and chara.state == "WALK" then
+    if chara.is_player or chara.is_player2 and chara.state == "WALK" then
         if not self.x_axis then
             chara:setFacing("down")
             chara:setState("HOP", chara.x, self.y + self.downamount)

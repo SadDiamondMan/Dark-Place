@@ -361,7 +361,7 @@ function Battle:onStateChange(old,new)
         self.music.basepitch = self.music.pitch
     end
 
-    if Game.world and Game.world.player2 then
+    if Game.world and Game.world.player2 and self.encounter.multiplayer then
         local remove_arena = {"DEFENDINGEND", "TRANSITIONOUT", "ACTIONSELECT", "VICTORY", "INTRO", "ACTIONS", "ENEMYSELECT", "XACTENEMYSELECT", "PARTYSELECT", "MENUSELECT", "ATTACKING"}
         local should_end = true
 
@@ -378,7 +378,7 @@ function Battle:onStateChange(old,new)
     end
 
 
-    if Game.world.player2 then
+    if Game.world.player2 and self.encounter.multiplayer then
         if new == "DEFENDINGBEGIN" then
         if self.arena then
             self.arena:remove()

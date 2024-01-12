@@ -1,7 +1,7 @@
 local Soul2, super = Class(Object)
 
 function Soul2:init(x, y, color)
-    super.init(self, x, y)
+    super.init(self, x, y, color)
 
     if color then
         self:setColor(color)
@@ -74,6 +74,24 @@ function Soul2:init(x, y, color)
 
     self.can_move = true
     self.allow_focus = true
+
+
+
+    self.outline = Sprite("player/heart_invert") -- Creating this first so sprite_focus will be on top of it
+    self.outline:setOrigin(0.5, 0.5)
+    self.outline.alpha = 0
+    self.outline.color = {0, 1, 1}
+    self.outline.debug_select = false
+    self:addChild(self.outline)
+
+    self.sprite_focus = Sprite("player/heart_dodge_focus")
+    self.sprite_focus:setOrigin(0.5, 0.5)
+    self.sprite_focus.inherit_color = false
+    self.sprite_focus.color = {1, 0, 1}
+    self.sprite_focus.alpha = 0
+    self.sprite_focus.debug_select = false
+    self:addChild(self.sprite_focus)
+
 end
 
 function Soul2:onRemove(parent)
@@ -310,6 +328,16 @@ function Soul2:onSquished(solid)
 end
 
 function Soul2:doMovement()
+
+    if Input.down("u") and not self.blue then -- Reduced hitbox size can get you stuck in collision with the blue soul, so it can't use this.
+        self.collider.radius = 4
+	self.sprite_focus.alpha = 1
+    else
+        self.collider.radius = 8
+	self.sprite_focus.alpha = 0
+    end
+
+
     local speed = self.speed
 
     -- Do speed calculations here if required.

@@ -9,7 +9,7 @@ return {
 
         party = party or Game.party
         cutscene:text("* This is the multiplayer mode toggle.")
-        cutscene:text("UP = I, LEFT = J,\nDOWN = K, RIGHT = L.")
+        cutscene:text("UP = I, LEFT = J,\nDOWN = K, RIGHT = L,\nCANCEL = U")
         if Game.world.player2 then 
             cutscene:text("* Stop playing multiplayer?")
             local opinion = cutscene:choicer({"YES", "NO"})

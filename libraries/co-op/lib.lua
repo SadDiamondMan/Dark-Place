@@ -50,7 +50,7 @@ function Lib:init()
                     self.player:setFacing(facing)
                 end
 
-                if Game:getFlag("2_player") and Game.party[2] then
+                if Game.world.player2 and Game.party[2] then
                     if type(marker) == "table" then
                         self:spawnPlayer2(marker[1], marker[2], party[2]:getActor())
                     else
