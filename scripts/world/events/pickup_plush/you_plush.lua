@@ -45,6 +45,19 @@ function you_plush:onInteract(player, dir)
     return true
 end
 
+function you_plush:onLiteInteract(player2, dir)
+	Assets.playSound("croak")
+    self:setParent(player2)
+	self.x = player2.width/2
+	self.y = -6
+	self:setScale(1,1)
+	
+	self.held2 = true
+	player2.holding = self
+
+    return true
+end
+
 function you_plush:update()
 	super.update(self)
 	
@@ -56,11 +69,20 @@ function you_plush:update()
 		self.x = Game.world.player.x + self.place_math[Game.world.player.facing][1]
 		self.y = Game.world.player.y + self.place_math[Game.world.player.facing][2]
 		self:setScale(2,2)
+	elseif self.held2 and Input.pressed("u") and self:canPlace(Game.world.player2) then
+		Assets.playSound("croak")
+		self:setParent(Game.world)
+		self.held2 = false
+		Game.world.player2.holding = nil
+		self.x = Game.world.player2.x + self.place_math[Game.world.player2.facing][1]
+		self.y = Game.world.player2.y + self.place_math[Game.world.player2.facing][2]
+		self:setScale(2,2)
 	end
 end
 
 function you_plush:canPlace(player)
 	return not Game.world:checkCollision(player.interact_collider[player.facing])
+
 end
 
 function you_plush:onRemove(parent)

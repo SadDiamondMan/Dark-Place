@@ -112,8 +112,9 @@ function Player2:interact()
     end
     table.sort(interactables, function(a,b) return a.dist < b.dist end)
     for _,v in ipairs(interactables) do
-        if v.obj:onInteract(self, self.facing) then
+        if v.obj:onLiteInteract(self, self.facing) then
             return true
+        else
         end
     end
 
@@ -146,10 +147,19 @@ function Player2:handleMovement()
     if Input.down("k") then walk_y = walk_y + 1 end
     if Input.down("i") then walk_y = walk_y - 1 end
 
+    if Input.pressed("u") and Game.world.player2 then
+	
+        if self:interact() then
+            Input.clear("u")
+        else
+            --self:croak()
+        end
+    end
+
     self.moving_x = walk_x
     self.moving_y = walk_y
 
-    local running = (Input.down("u") or self.force_run) and not self.force_walk
+    local running = (Input.down("o") or self.force_run) and not self.force_walk
     if Kristal.Config["autoRun"] and not self.force_run and not self.force_walk then
         running = not running
     end
@@ -197,6 +207,10 @@ function Player2:updateWalk()
     end
 end
 
+function Player2:onKeyPressed(key)
+
+end
+
 function Player2:isMoving()
     return self.moving_x ~= 0 or self.moving_y ~= 0
 end
@@ -229,7 +243,7 @@ function Player2:updateSlide()
     local slide_x = 0
     local slide_y = 0
 
-    if self:isMovementEnabled() then
+    if Game.world.player:isMovementEnabled() then
         if Input.down("l") then slide_x = slide_x + 1 end
         if Input.down("j") then slide_x = slide_x - 1 end
         if Input.down("k") then slide_y = slide_y + 1 end

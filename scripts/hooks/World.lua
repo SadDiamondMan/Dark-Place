@@ -223,4 +223,18 @@ function World:mapTransition(...)
     end)
 end
 
+--on key pressed is in mod.lua
+
+--if Input.down("l") then slide_x = slide_x + 1 end
+
+--function World:onKeyPressed(key)
+--    if Game.world.player2 and self.state == "GAMEPLAY" then
+ --       if Input.pressed("o") and self.player2 and not self:hasCutscene() then
+ --           if self.player2:interact() then
+ --               Input.clear("o")
+ --           end
+  --      end
+  --  end
+--end
+
 return World

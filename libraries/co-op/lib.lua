@@ -11,6 +11,74 @@ OverworldSoul2 = require(folderPath ..'scripts.objects.overworldsoul2')
 
 function Lib:init()
 
+    Utils.hook(Interactable, "onLiteInteract", function(player, dir)
+    end)
+
+    Utils.hook(TreasureChest, "onLiteInteract", function(orig, self, player, dir)
+        if self:getFlag("opened") then
+            self.world:showText("* (The chest is empty.)")
+        else
+            Assets.playSound("locker")
+            self.sprite:setFrame(2)
+            self:setFlag("opened", true)
+
+            local name, success, result_text
+            if self.item then
+                local item = self.item
+                if type(self.item) == "string" then
+                    item = Registry.createItem(self.item)
+                end
+                success, result_text = Game.inventory:tryGiveItem(item)
+                name = item:getName()
+            elseif self.money then
+                name = self.money.." "..Game:getConfig("darkCurrency")
+                success = true
+                result_text = "* ([color:yellow]"..name.."[color:reset] was added to your [color:yellow]MONEY HOLE[color:reset].)"
+                Game.money = Game.money + self.money
+            end
+
+            if name then
+                self.world:showText({
+                    "* (You opened the treasure\nchest.)[wait:5]\n* (Inside was [color:yellow]"..name.."[color:reset].)",
+                    result_text
+                }, function()
+                    if not success then
+                        self.sprite:setFrame(1)
+                        self:setFlag("opened", false)
+                    end
+                end)
+            else
+                self.world:showText("* (The chest is empty.)")
+                success = true
+            end
+
+            if success and self.set_flag then
+                Game:setFlag(self.set_flag, (self.set_value == nil and true) or self.set_value)
+            end
+        end
+
+        return true
+    end)
+
+    Utils.hook(PushBlock, "onLiteInteract", function(orig, self, chara, facing)
+        self:playPushSound()
+
+        if self.state ~= "IDLE" then return true end
+
+        if not self:checkCollision(facing) then
+            self:onPush(facing)
+        else
+            self:onPushFail(facing)
+        end
+
+        return true
+    end)
+
+    --Utils.hook(Event, "onLiteInteract", function(player, dir)
+        -- Do stuff when the player interacts with this object (CONFIRM key)
+        --return false
+    --end)
+
     Utils.hook(Transition, "onEnter", function(orig, self, chara)
         if chara.is_player2 or chara.is_player then
             local x, y = self.target.x, self.target.y
